@@ -36,7 +36,7 @@ object Endpoints {
     organizationalUnit = Some(
       OrganizationalUnit("Technology Swarm")
     ),
-    contact = personExample,
+    contact = Some(personExample),
     responsible = List(personExample),
     validity = Some(
       Validity(
@@ -47,9 +47,9 @@ object Endpoints {
     locations = List(
       Location(
         name = "Firstbird HQ",
-        address = Some("Gertrude-Fröhlich-Sandner Straße 2-4, Tower 9, Spaces"),
-        city = Some("Vienna"),
-        country = Some("Austria"),
+        // address = Some("Gertrude-Fröhlich-Sandner Straße 2-4, Tower 9, Spaces"),
+        municipality = Some("Vienna"),
+        countryCode = Some("AUT"),
         coordinates = Some(Coordinates(longitude = 48.186618, latitude = 16.375152))
       )
     ),

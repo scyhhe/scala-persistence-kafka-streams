@@ -5,3 +5,7 @@ case class JobDetails(
     skills: List[Skill],
     description: Description
 )
+
+object JobDetails {
+    def empty(title: String): JobDetails = JobDetails(title, List.empty, Description.empty)
+}

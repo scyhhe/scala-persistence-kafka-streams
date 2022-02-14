@@ -9,21 +9,21 @@ lazy val root = project
   .in(file("."))
   .settings(commonSettings)
   .settings(
-    name := "job-api",
+    name := "jobapi",
     fbrdReleaseTasks ++= Seq(
       docs / makeSite
       // service / Docker / publishLocal //publish the produced docker image locally for further custom publishing
     )
   )
-  .aggregate(api,model)
+  .aggregate(api, model, events, server)
   .enablePlugins(FbrdNoPublish)
 
 lazy val model = project
   .in(file("model"))
   .settings(commonSettings)
   .settings(
-    name := "job-api-model",
-    libraryDependencies ++= Dependencies.api.value,
+    name := "jobapi-model",
+    libraryDependencies ++= Dependencies.model.value,
     crossBuilding := true
   )
 
@@ -31,27 +31,47 @@ lazy val api = project
   .in(file("api"))
   .settings(commonSettings)
   .settings(
-    name := "job-api-definition",
+    name := "jobapi-api-definition",
     libraryDependencies ++= Dependencies.api.value,
     crossBuilding := true
   )
   .dependsOn(model)
+
+lazy val events = project
+  .in(file("events"))
+  .settings(commonSettings)
+  .settings(
+    name := "jobapi-events",
+    libraryDependencies ++= Dependencies.events.value,
+    crossBuilding := true
+  )
+  .dependsOn(model)
+
+lazy val server = project
+  .in(file("server"))
+  .settings(commonSettings)
+  .settings(
+    name := "jobapi-server",
+    libraryDependencies ++= Dependencies.server.value,
+    crossBuilding := true
+  )
+  .dependsOn(api, events)
 
 lazy val docs =
   project
     .in(file("docs"))
     .enablePlugins(FbrdDocsPlugin, SbtWeb)
     .settings(
-      name := "job-api-docs",
+      name                 := "job-api-docs",
       fbrdDocsBucketFolder := "referral-api",
       libraryDependencies ++= Dependencies.docs.value,
-      paradoxProperties in Compile ++= Map(
+      Compile / paradoxProperties ++= Map(
         "snip.project.base_dir" -> (baseDirectory in ThisBuild).value.getAbsolutePath
       ),
       makeSite / mappings ++= ((api / baseDirectory).value / "target" ** "*openapi.yaml").get
         .map(file => file -> file.getName),
-      makeSite := makeSite.dependsOn((api / Compile / run).toTask("")).value,
-      siteSubdirName in makeSite := "swagger",
+      makeSite                  := makeSite.dependsOn((api / Compile / run).toTask("")).value,
+      makeSite / siteSubdirName := "swagger",
       addMappingsToSiteDir(
         Def.task {
           (TestAssets / assets / mappings).value.map { case (key, value) =>

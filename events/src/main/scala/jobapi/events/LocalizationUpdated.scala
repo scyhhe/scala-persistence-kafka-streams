@@ -1,8 +1,6 @@
 package jobapi.events
 
-import jobapi.model.JobId
-import jobapi.model.Language
-import jobapi.model.JobDetails
+import jobapi.model.{JobDetails, JobId, Language}
 
 case class LocalizationUpdated(
     id: JobId,

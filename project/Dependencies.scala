@@ -9,7 +9,7 @@ object Dependencies {
       "com.softwaremill.sttp.tapir" %% "tapir-json-play"          % tapirVersion.value,
       "com.softwaremill.sttp.tapir" %% "tapir-openapi-docs"       % tapirVersion.value,
       "com.softwaremill.sttp.tapir" %% "tapir-openapi-circe-yaml" % tapirVersion.value,
-      "org.gnieh"                   %% "diffson-play-json"       % "4.1.1"
+      "org.gnieh"                   %% "diffson-play-json"        % "4.1.1"
     )
   }
 

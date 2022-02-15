@@ -7,5 +7,5 @@ case class JobDetails(
 )
 
 object JobDetails {
-    def empty(title: String): JobDetails = JobDetails(title, List.empty, Description.empty)
+  def empty(title: String): JobDetails = JobDetails(title, List.empty, Description.empty)
 }

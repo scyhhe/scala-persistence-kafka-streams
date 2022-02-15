@@ -1,11 +1,8 @@
 package jobapi.api.model
 
-import jobapi.model._
 import jobapi.model.Implicits._
-import play.api.libs.json.Format
-import play.api.libs.json.Json
-import play.api.libs.json.Writes
-import play.api.libs.json.Reads
+import jobapi.model._
+import play.api.libs.json.{Format, Json, Reads, Writes}
 
 object JobRequest {
 

@@ -6,5 +6,5 @@ case class Description(
 )
 
 object Description {
-    val empty: Description = Description(Option.empty, List.empty)
+  val empty: Description = Description(Option.empty, List.empty)
 }

@@ -1,15 +1,15 @@
 package jobapi.api
 
-import jobapi.model._
-import jobapi.api.model._
 import jobapi.api.model.JobRequest._
-
+import jobapi.api.model._
+import jobapi.model._
 import sttp.tapir._
-import sttp.tapir.json.play._
 import sttp.tapir.generic.auto._
-import java.util.UUID
+import sttp.tapir.json.play._
+
 import java.time.Instant
 import java.time.temporal.ChronoUnit
+import java.util.UUID
 
 object Endpoints {
 

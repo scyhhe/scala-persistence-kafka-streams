@@ -4,7 +4,7 @@ import jobapi.model.Implicits._
 import jobapi.model._
 import play.api.libs.json.{Format, Json, Reads, Writes}
 
-object JobRequest {
+object JobResponse {
 
   implicit val localizationFormat: Format[Map[Language, JobDetails]] = Format(
     Reads.of[Map[String, JobDetails]].map(x => x.map { case (key, value) => (Language(key), value) }),
@@ -13,12 +13,12 @@ object JobRequest {
       .contramap[Map[Language, JobDetails]](_.map { case (key, value) => (key.value, value) })
   )
 
-  implicit val reads: Format[JobRequest] = Json.format[JobRequest]
+  implicit val reads: Format[JobResponse] = Json.format[JobResponse]
 
 }
 
-case class JobRequest(
-    id: String,
+case class JobResponse(
+    id: JobId,
     organization: Option[Organization],
     organizationalUnit: Option[OrganizationalUnit],
     contact: Option[Person],

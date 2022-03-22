@@ -7,7 +7,11 @@ import sttp.tapir.openapi._
 private[api] class ApiDefinition {
 
   private val endpoints: List[Endpoint[_, _, _, _, _]] = List(
-    Endpoints.getJob
+    Endpoints.getJob,
+    Endpoints.getJobs,
+    Endpoints.createJob,
+    Endpoints.patchJob,
+    Endpoints.deleteJob
   )
 
   private val info: Info = Info(

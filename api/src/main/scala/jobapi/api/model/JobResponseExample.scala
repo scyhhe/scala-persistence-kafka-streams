@@ -5,11 +5,10 @@ import jobapi.model._
 
 import java.time.Instant
 import java.time.temporal.ChronoUnit
-import java.util.UUID
 
-object JobRequestExample {
-  val value = JobRequest(
-    UUID.randomUUID().toString(),
+object JobResponseExample {
+  val value = JobResponse(
+    JobId.random(),
     organization = Some(
       Organization("Firstbird")
     ),
@@ -27,10 +26,11 @@ object JobRequestExample {
     locations = List(
       Location(
         name = "Firstbird HQ",
-        // address = Some("Gertrude-Fröhlich-Sandner Straße 2-4, Tower 9, Spaces"),
-        municipality = Some("Vienna"),
-        countryCode = Some("AUT"),
-        coordinates = Some(Coordinates(longitude = 48.186618, latitude = 16.375152))
+        details = LocationDetails(
+          municipality = Some("Vienna"),
+          countryCode = Some("AUT"),
+          coordinates = Some(Coordinates(longitude = 48.186618, latitude = 16.375152))
+        )
       )
     ),
     externalId = Some("123"),

@@ -63,22 +63,11 @@ lazy val docs =
     .enablePlugins(FbrdDocsPlugin, SbtWeb)
     .settings(
       name                 := "job-api-docs",
-      fbrdDocsBucketFolder := "referral-api",
-      libraryDependencies ++= Dependencies.docs.value,
+      fbrdDocsBucketFolder := "job-api",
       Compile / paradoxProperties ++= Map(
-        "snip.project.base_dir" -> (baseDirectory in ThisBuild).value.getAbsolutePath
+        "snip.project.base_dir" -> (ThisBuild / baseDirectory).value.getAbsolutePath
       ),
-      makeSite / mappings ++= ((api / baseDirectory).value / "target" ** "*openapi.yaml").get
-        .map(file => file -> file.getName),
-      makeSite                  := makeSite.dependsOn((api / Compile / run).toTask("")).value,
-      makeSite / siteSubdirName := "swagger",
-      addMappingsToSiteDir(
-        Def.task {
-          (TestAssets / assets / mappings).value.map { case (key, value) =>
-            (key, value.replace("lib/swagger-ui/", ""))
-          }
-        },
-        siteSubdirName in makeSite
-      )
+      fbrdOpenApiDocuments ++= ((api / baseDirectory).value / "target" ** "*openapi.yaml").get,
+      makeSite := makeSite.dependsOn((api / Compile / run).toTask("")).value
     )
     .dependsOn(api)

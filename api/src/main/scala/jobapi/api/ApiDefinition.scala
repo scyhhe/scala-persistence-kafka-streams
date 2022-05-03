@@ -11,7 +11,8 @@ private[api] class ApiDefinition {
     Endpoints.getJobs,
     Endpoints.createJob,
     Endpoints.patchJob,
-    Endpoints.deleteJob
+    Endpoints.deleteJob,
+    Endpoints.getTenant
   )
 
   private val info: Info = Info(

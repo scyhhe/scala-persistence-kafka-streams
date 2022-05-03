@@ -15,7 +15,7 @@ lazy val root = project
       // service / Docker / publishLocal //publish the produced docker image locally for further custom publishing
     )
   )
-  .aggregate(api, model, events, server)
+  .aggregate(api, model, events, server, consumer)
   .enablePlugins(FbrdNoPublish)
 
 lazy val model = project
@@ -52,10 +52,18 @@ lazy val server = project
   .settings(commonSettings)
   .settings(
     name := "jobapi-server",
-    libraryDependencies ++= Dependencies.server.value,
-    crossBuilding := true
+    libraryDependencies ++= Dependencies.server.value
   )
   .dependsOn(api, events)
+
+lazy val consumer = project
+  .in(file("consumer"))
+  .settings(commonSettings)
+  .settings(
+    name := "jobapi-consumer",
+    libraryDependencies ++= Dependencies.consumer.value
+  )
+  .dependsOn(events)
 
 lazy val docs =
   project

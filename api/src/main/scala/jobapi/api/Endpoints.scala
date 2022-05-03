@@ -23,30 +23,38 @@ object Endpoints {
     Some(Schema.SName("Map", List("Details")))
   )
 
-  private val jobIdPathParameter = path[UUID].name("jobID")
-  private val jobResponseBody    = jsonBody[JobResponse].example(JobResponseExample.value)
+  private val jobIdPathParameter    = path[UUID].name("jobID")
+  private val tenantIdPathParameter = path[UUID].name("tenantID")
+  private val jobResponseBody       = jsonBody[JobResponse].example(JobResponseExample.value)
 
-  val getJob = endpoint.get
+  private val jobEndpoint = endpoint.in("tenants" / tenantIdPathParameter).tag("job")
+
+  val getJob = jobEndpoint.get
+    .description("This does something.")
     .in("jobs" / jobIdPathParameter)
     .out(jobResponseBody)
 
-  val getJobs = endpoint.get
+  val getJobs = jobEndpoint.get
     .in("jobs")
     .out(jsonBody[GetJobsResponse])
 
-  val createJob = endpoint.post
+  val createJob = jobEndpoint.post
     .in("jobs")
     .in(jsonBody[CreateJobRequest])
     .out(jobResponseBody)
 
   implicit val format = Json.format[JsonPatch[JsValue]]
 
-  val patchJob = endpoint.patch
+  val patchJob = jobEndpoint.patch
     .in("jobs" / jobIdPathParameter)
     .in(jsonBody[JsonPatch[JsValue]].example(JsonPatchExample.value))
     .out(jobResponseBody)
 
-  val deleteJob = endpoint.delete
+  val deleteJob = jobEndpoint.delete
     .in("jobs" / jobIdPathParameter)
+
+  private val tenantEndpoint = endpoint.in("tenants" / tenantIdPathParameter).tag("tenant")
+
+  val getTenant = tenantEndpoint.get.description("Tenant")
 
 }

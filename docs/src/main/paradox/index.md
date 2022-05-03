@@ -5,6 +5,7 @@
 @@@ index
 
 * [Introduction](intro.md)
+* [Introduction](design.md)
 * [Dependencies](Dependencies.md)
 
 @@@

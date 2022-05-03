@@ -1,4 +1,4 @@
-package jobapi.server.job
+package jobapi.server
 
 import cats.implicits._
 import diffson._
@@ -11,7 +11,7 @@ import play.api.libs.json.{JsValue, Json}
 
 import scala.util.Try
 
-object State extends App {
+object PatchExample extends App {
 
   implicit val format = Json.format[JsonPatch[JsValue]]
   implicit val lcs    = new Patience[JsValue]

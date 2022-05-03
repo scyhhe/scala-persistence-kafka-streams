@@ -26,6 +26,17 @@ object Dependencies {
   }
 
   val server = Def.setting {
-    Seq("com.typesafe.play" %% "play-json" % playJsonVersion.value)
+    Seq(
+      "com.typesafe.play" %% "play-json"           % playJsonVersion.value,
+      "org.apache.kafka"  %% "kafka-streams-scala" % "3.1.0",
+      "org.rocksdb"        % "rocksdbjni"          % "6.29.5",
+      "org.slf4j"          % "slf4j-simple"        % "1.7.36"
+    )
+  }
+
+  val consumer = Def.setting {
+    Seq(
+      "org.apache.kafka" %% "kafka-streams-scala" % "3.1.0"
+    )
   }
 }

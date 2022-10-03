@@ -1,81 +1,33 @@
-import com.typesafe.sbt.web.Import.WebKeys._
-
-lazy val commonSettings = Seq(
-  organization := "com.firstbird",
-  scalacOptions in Test -= "-Ywarn-dead-code" // https://github.com/mockito/mockito-scala/issues/29
-)
+ThisBuild / organization := "com.firstbird"
+ThisBuild / scalaVersion := "2.13.8"
 
 lazy val root = project
   .in(file("."))
-  .settings(commonSettings)
   .settings(
-    name := "jobapi",
-    fbrdReleaseTasks ++= Seq(
-      docs / makeSite
-      // service / Docker / publishLocal //publish the produced docker image locally for further custom publishing
-    )
+    name := "scafka"
   )
-  .aggregate(api, model, events, server, consumer)
-  .enablePlugins(FbrdNoPublish)
-
-lazy val model = project
-  .in(file("model"))
-  .settings(commonSettings)
-  .settings(
-    name := "jobapi-model",
-    libraryDependencies ++= Dependencies.model.value,
-    crossBuilding := true
-  )
-
-lazy val api = project
-  .in(file("api"))
-  .settings(commonSettings)
-  .settings(
-    name := "jobapi-api-definition",
-    libraryDependencies ++= Dependencies.api.value,
-    crossBuilding := true
-  )
-  .dependsOn(model)
+  .aggregate(events, server, consumer)
 
 lazy val events = project
   .in(file("events"))
-  .settings(commonSettings)
   .settings(
-    name := "jobapi-events",
-    libraryDependencies ++= Dependencies.events.value,
-    crossBuilding := true
+    name := "scafka-events",
+    libraryDependencies ++= Dependencies.events.value
   )
-  .dependsOn(model)
 
 lazy val server = project
   .in(file("server"))
-  .settings(commonSettings)
   .settings(
-    name := "jobapi-server",
+    name := "scafka-server",
     libraryDependencies ++= Dependencies.server.value
-  )
-  .dependsOn(api, events)
-
-lazy val consumer = project
-  .in(file("consumer"))
-  .settings(commonSettings)
-  .settings(
-    name := "jobapi-consumer",
-    libraryDependencies ++= Dependencies.consumer.value
   )
   .dependsOn(events)
 
-lazy val docs =
-  project
-    .in(file("docs"))
-    .enablePlugins(FbrdDocsPlugin, SbtWeb)
-    .settings(
-      name                 := "job-api-docs",
-      fbrdDocsBucketFolder := "job-api",
-      Compile / paradoxProperties ++= Map(
-        "snip.project.base_dir" -> (ThisBuild / baseDirectory).value.getAbsolutePath
-      ),
-      fbrdOpenApiDocuments ++= ((api / baseDirectory).value / "target" ** "*openapi.yaml").get,
-      makeSite := makeSite.dependsOn((api / Compile / run).toTask("")).value
-    )
-    .dependsOn(api)
+lazy val consumer = project
+  .in(file("consumer"))
+  .settings(
+    name := "scafka-consumer",
+    libraryDependencies ++= Dependencies.consumer.value,
+    connectInput in run := true
+  )
+  .dependsOn(events)

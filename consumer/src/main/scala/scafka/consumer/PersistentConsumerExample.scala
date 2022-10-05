@@ -25,8 +25,13 @@ import _root_.scala.jdk.CollectionConverters._
 
 object PersistentConsumerExample extends IOApp {
 
-  implicit val keySerde: Deserializer[UUID]          = JsonSerialization.deserializer[UUID]
-  implicit val valueSerde: Deserializer[MeetupState] = JsonSerialization.deserializer[MeetupState]
+  implicit val keySerde: Deserializer[UUID] = new Deserializer[UUID] {
+    override def deserialize(key: String, data: Array[Byte]): UUID = {
+      UUID.fromString(new String(data, StandardCharsets.UTF_8))
+    }
+  }
+  implicit val meetupSerde: Deserializer[MeetupState] = JsonSerialization.deserializer[MeetupState]
+  implicit val userSerde: Deserializer[UserState]     = JsonSerialization.deserializer[UserState]
 
   val props: Map[String, Object] = Map(
     GROUP_ID_CONFIG                -> "scafka-state-consumer",
@@ -35,11 +40,14 @@ object PersistentConsumerExample extends IOApp {
   )
 
   override def run(args: List[String]): IO[ExitCode] =
-    pollForever[UUID, MeetupState]("meetup-state").as(ExitCode.Success)
+    // pollForever[UUID, UserState]("meetup-state").as(ExitCode.Success)
+    pollForever[UUID, UserState]("user-state").as(ExitCode.Success)
 
   private def pollForever[K, V](
       topic: String)(implicit keyDeser: Deserializer[K], valueDeser: Deserializer[V]): IO[Nothing] = {
-    val database = Map.empty[K, V]
+
+    var database = Map.empty[K, V]
+
     Resource
       .make {
         val consumer = new KafkaConsumer[K, V](props.asJava, keyDeser, valueDeser)
@@ -52,13 +60,14 @@ object PersistentConsumerExample extends IOApp {
           keyValue = records.map { r => ((r.key()), r.value()) }
           _ <- keyValue.traverse { case (k, v) =>
             IO {
-              println(s"[$topic] $k => $v")
-              database + ((k, v))
+              // println(s"[$topic] $k => $v")
+              println(s"Persisting $k -> $v")
+              database = database.updated(k, v)
               println(database)
             }
           }
         } yield ()
-        consume.foreverM.onCancel(consumer.close(Duration.ofSeconds(2)).pure[IO])
+        consume.foreverM
       }
   }
 }

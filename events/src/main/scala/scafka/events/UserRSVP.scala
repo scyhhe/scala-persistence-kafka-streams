@@ -3,8 +3,9 @@ package scafka.events
 import play.api.libs.json._
 import java.util.UUID
 import java.time.LocalDateTime
+import scafka.events.Event._
 
-object MeetupUserRSPV {
+object UserRSVP {
 
   sealed abstract class Status(val value: String)
 
@@ -21,7 +22,7 @@ object MeetupUserRSPV {
 
     implicit val format = Format.of[String].bimap(Status.fromString(_), (status: Status) => status.value)
   }
-  implicit val format: OFormat[MeetupUserRSPV] = Json.format[MeetupUserRSPV]
+  implicit val format: OFormat[UserRSVP] = Json.format[UserRSVP]
 }
 
-case class MeetupUserRSPV(id: UUID, eventId: UUID, name: String, status: MeetupUserRSPV.Status) extends Event
+case class UserRSVP(id: UUID, eventId: UUID, status: UserRSVP.Status) extends UserEvent
